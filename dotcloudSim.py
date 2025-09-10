@@ -138,16 +138,17 @@ class sc(InteractiveScene):
         self.c2ps = lambda x: self.ax.c2p(self.rcs(x), self.ics(x))
 
         #section: custom zoom
+        #todo: make usable
         self.l = -3
         self.r = 3
         self.d = -3
         self.u = 3
 
         self.ax = ComplexPlane(
-            x_range=(self.l, self.r),
-            y_range=(self.d, self.u),
-            width=self.r - self.l,
-            height=self.u - self.d,
+            x_range=(-3, 3),
+            y_range=(-3, 3),
+            width=6,
+            height=6,
         )
         self.play(FadeIn(self.ax))
 
@@ -201,5 +202,14 @@ class sc(InteractiveScene):
             case key.O:
                 self.play(FadeOut(self.mandDotc))
                 self.play(FadeIn(self.dotc))
+        
+        if (50 <= symbol and symbol <= 57):
+            #section: number key pressed, doing that many iters
+
+            iters = symbol - 48
+
+            for _ in range(iters):
+                self.orbitStep(inst=1)
+                self.wait(0.5)
 
         super().on_key_press(symbol, modifiers)
