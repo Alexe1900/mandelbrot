@@ -45,53 +45,23 @@ class conf(InteractiveScene):
 
         self.npaxInp = Textbox(value='600', box_kwargs={'height': 0.5})
         npaxLabel = Text('Numbers Per X Axis', font_size=12).next_to(self.npaxInp, LEFT)
-        npaxDisp = always_redraw(
-            lambda: Text(
-                self.npaxInp.get_value(),
-                font_size=12
-            ).move_to(self.npaxInp.get_center()).set_color(BLACK)
-        )
-        npax = Group(self.npaxInp, npaxLabel, npaxDisp)
+        npax = Group(self.npaxInp, npaxLabel)
 
-        self.npayInp = Textbox(value='', box_kwargs={'height': 0.5})
+        self.npayInp = Textbox(value='600', box_kwargs={'height': 0.5})
         npayLabel = Text('Numbers Per Y Axis', font_size=12).next_to(self.npayInp, LEFT)
-        npayDisp = always_redraw(
-            lambda: Text(
-                self.npayInp.get_value(),
-                font_size=12
-            ).move_to(self.npayInp.get_center()).set_color(BLACK)
-        )
-        npay = Group(self.npayInp, npayLabel, npayDisp)
+        npay = Group(self.npayInp, npayLabel)
 
         self.cInp = Textbox(value='0', box_kwargs={'height': 0.5})
         cLabel = Text('C for julia / Start for mand', font_size=12).next_to(self.cInp, LEFT)
-        cDisp = always_redraw(
-            lambda: Text(
-                self.cInp.get_value(),
-                font_size=12
-            ).move_to(self.cInp.get_center()).set_color(BLACK)
-        )
-        c = Group(self.cInp, cLabel, cDisp)
+        c = Group(self.cInp, cLabel)
 
         self.initInp = Textbox(value='0', box_kwargs={'height': 0.5})
         initLabel = Text('Initial epoch number', font_size=12).next_to(self.initInp, LEFT)
-        initDisp = always_redraw(
-            lambda: Text(
-                self.initInp.get_value(),
-                font_size=12
-            ).move_to(self.initInp.get_center()).set_color(BLACK)
-        )
-        initial = Group(self.initInp, initLabel, initDisp)
+        initial = Group(self.initInp, initLabel)
 
         self.radInp = Textbox(value='0.01', box_kwargs={'height': 0.5})
         radLabel = Text('Dot radius', font_size=12).next_to(self.radInp, LEFT)
-        radDisp = always_redraw(
-            lambda: Text(
-                self.radInp.get_value(),
-                font_size=12
-            ).move_to(self.radInp.get_center()).set_color(BLACK)
-        )
-        rad = Group(self.radInp, radLabel, radDisp)
+        rad = Group(self.radInp, radLabel)
 
         controls = Group(julia, npax, npay, c, initial, rad, self.endButton).arrange(DOWN)
         self.add(controls)

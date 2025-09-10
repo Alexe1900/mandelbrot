@@ -71,22 +71,21 @@ class sc(InteractiveScene):
         
         return color_to_rgb(self.gradient[self.outSince[i]])
     
-    #def: recolor + move around dotc
+    #def: move around dotc
     def updateDotc(self):
-        # insert line 72 for dot separation
-        # .make_3d(
-        #             reflectiveness=0.3,
-        #             gloss=0.3
-        #         )
         self.play(
             Transform(
                 self.dotc,
                 DotCloud(
                     self.c2ps(self.points[:, 0]),
                     radius=self.rad
-                ).set_color_by_rgb_func(self.colorTest)
+                )
             )
         )
+    
+    #def: recolors dotc
+    def colorDotc(self):
+        self.dotc.set_color_by_rgb_func(self.colorTest)
     
     #def: recolor manddotc
     def updateMandDotc(self):
@@ -109,7 +108,6 @@ class sc(InteractiveScene):
         if (inst == 0): self.updateDotc()
         else:
             self.dotc.set_points(self.c2ps(self.points[:, 0]))
-            self.dotc.set_color_by_rgb_func(self.colorTest)
         
         self.updOutSince()
 
@@ -202,6 +200,8 @@ class sc(InteractiveScene):
             case key.O:
                 self.play(FadeOut(self.mandDotc))
                 self.play(FadeIn(self.dotc))
+            case key.C:
+                self.colorDotc()
         
         if (50 <= symbol and symbol <= 57):
             #section: number key pressed, doing that many iters
