@@ -1,7 +1,9 @@
 from manimlib import *
+from pyglet.window import key
+
 import numpy as np
 
-from pyglet.window import key
+from playsound import playsound
 
 #def: custom np.linspace() with rounding
 def lspace(start, stop, n):
@@ -182,6 +184,8 @@ class sc(InteractiveScene):
         for _ in range(initial):
             self.orbitStep(inst=1)
             self.wait(1)
+        
+        playsound('ready.mp3')
 
     #section: hotkeys
     def on_key_press(self, symbol, modifiers):
