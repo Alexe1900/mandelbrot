@@ -2,8 +2,27 @@ from manimlib import *
 from pyglet.window import key
 
 import numpy as np
+from copy import deepcopy
 
 from playsound import playsound
+
+def hue2rgb(h):
+    x = h / 60
+
+    if h < 60:
+        r, g, b = 1, x, 0
+    elif h < 120:
+        r, g, b = 2-x, 1, 0
+    elif h < 180:
+        r, g, b = 0, 1, x-2
+    elif h < 240:
+        r, g, b = 0, 4-x, 1
+    elif h < 300:
+        r, g, b = x-4, 0, 1
+    else:
+        r, g, b = 1, 0, 6-x
+
+    return (r, g, b)
 
 #def: custom np.linspace() with rounding
 def lspace(start, stop, n):
@@ -73,6 +92,25 @@ class sc(InteractiveScene):
         
         return color_to_rgb(self.gradient[self.outSince[i]])
     
+    #def: check colors for mand dots (angle coloring)
+    def mandColorTestAngle(self, p):
+        i = self.indexing[tuple(p)]
+
+        if (abs(self.points[i][0]) > 2):
+            return hex2rgb(BLACK)
+        else:
+            firstP = self.prev2[0][i] - self.prev2[1][i]
+            lastP = self.points[i][0] - self.prev2[1][i]
+
+            angle = float(np.angle(firstP, True) - np.angle(lastP, True))
+            angle += 720
+            angle %= 360
+
+            # print(angle)
+            # print(tuple(p))
+
+            return hue2rgb((angle * 5) % 360)
+    
     #def: move around dotc
     def updateDotc(self):
         self.play(
@@ -91,18 +129,21 @@ class sc(InteractiveScene):
     
     #def: recolor manddotc
     def updateMandDotc(self):
-        self.mandDotc.set_color_by_rgb_func(self.mandColorTestSpeed)
+        self.mandDotc.set_color_by_rgb_func(self.mandColorTestAngle)
         # self.mandDotc.make_3d(reflectiveness=0.3, gloss=0.3)
 
     #def: animate 1 orbit step, inst=0 if slow, inst=1 if instant
     def orbitStep(self, inst=0):
+        self.prev2[0] = deepcopy(self.prev2[1])
+        self.prev2[1] = deepcopy(self.points[:, 0])
+
         self.points[:, 0] **= 2
         self.points[:, 0] += self.points[:, 1]
 
         #def: move points way too far closer but still off screen to avoid overflow
+        # self.points[:, 0][abs(self.points[:, 0]) > 15] = self.points[:, 0][abs(self.points[:, 0]) > 15]
         #problem: points in the negatives get dragged across the screen
         #solution: 10-unit vector
-        # self.points[:, 0][abs(self.points[:, 0]) > 15] = self.points[:, 0][abs(self.points[:, 0]) > 15]
 
         self.points[:, 0] = np.where(abs(self.points[:, 0]) > 400, self.points[:, 0] / abs(self.points[:, 0]) * 10, self.points[:, 0])
 
@@ -139,16 +180,16 @@ class sc(InteractiveScene):
 
         #section: custom zoom
         #todo: make usable
-        self.l = -3
-        self.r = 3
-        self.d = -3
-        self.u = 3
+        self.l = -2
+        self.r = 2
+        self.d = -2
+        self.u = 2
 
         self.ax = ComplexPlane(
-            x_range=(-3, 3),
-            y_range=(-3, 3),
-            width=6,
-            height=6,
+            x_range=(-2, 2),
+            y_range=(-2, 2),
+            width=4,
+            height=4,
         )
         self.play(FadeIn(self.ax))
 
@@ -173,6 +214,7 @@ class sc(InteractiveScene):
         )
 
         self.outSince = [0] * len(fullspcs)
+        self.prev2 = [[0] * len(fullspcs)] * 2
 
         self.gradient = color_gradient([BLUE_E, RED_E, GREEN_E, ORANGE, MAROON_E, YELLOW_E, TEAL_E, PURPLE_E], 50)
         self.gradient.insert(0, BLACK)
